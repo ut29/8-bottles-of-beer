@@ -109,7 +109,9 @@ class _ListScreenState extends State<ListScreen> {
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return DetailedScreen(beer);
-        }));
+        })).then((value) {
+          return _buildSuggestions();
+        });
       },
     );
   }

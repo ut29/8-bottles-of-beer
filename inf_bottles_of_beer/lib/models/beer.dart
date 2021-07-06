@@ -44,6 +44,8 @@ class Flavor {
 class Beer {
   String name;
   String? brewer;
+  String? origin;
+  DateTime date = DateTime.now();
   double? price;
   Currency? unit;
   String? sampled;
