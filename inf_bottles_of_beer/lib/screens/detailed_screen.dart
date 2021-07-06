@@ -3,6 +3,7 @@ import '../models/beer.dart';
 import "package:intl/intl.dart";
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:async';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class DetailedScreen extends StatefulWidget {
   //const DetailedScreen({Key? key}) : super(key: key);
@@ -73,7 +74,7 @@ class _DetailedScreenState extends State<DetailedScreen> {
                   },
                 ),
               ),
-              const Text('    DATE '),
+              const Text('  DATE '),
               Expanded(
                 child: TextField(
                   controller:
@@ -88,6 +89,76 @@ class _DetailedScreenState extends State<DetailedScreen> {
     );
   }
 
+  Widget _buildDetailSection(Beer beer) {
+    print("detail");
+    return Container(
+      padding: const EdgeInsets.all(10),
+      child: Row(children: [
+        _buildBorderSection('Rating', _buildRating(beer))
+        //_buildDetailLeft(beer),
+        //_buildDetailRight(beer),
+      ]),
+    );
+  }
+
+  Widget _buildRating(Beer beer) {
+    return Container(
+        padding: const EdgeInsets.only(top: 5, bottom: 5),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RatingBar.builder(
+              initialRating: beer.rating ?? 0,
+              minRating: 0,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              itemSize: 20,
+              //itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
+              itemBuilder: (context, _) => const Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              updateOnDrag: true,
+              onRatingUpdate: (rating) {
+                setState(() {
+                  beer.rating = rating;
+                });
+              },
+            ),
+            Text('slider')
+          ],
+        ));
+  }
+
+  Widget _buildBorderBox(Widget contents) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 2,
+          color: Colors.black26,
+        )
+      ),
+      child: contents,
+    );
+  }
+
+  Widget _buildBorderSection(String title, Widget contents) {
+    return _buildBorderBox(Column(
+      children: [
+        Text(title),
+        Divider(
+          height: 3,
+          thickness: 3,
+          color: Colors.black26,
+          indent: 10,
+          endIndent: 10,
+        ),
+        contents,
+      ],
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     _beer = widget._beer;
@@ -100,7 +171,7 @@ class _DetailedScreenState extends State<DetailedScreen> {
         children: [
           //_buildPhotoSection(_beer),
           _buildBasicSection(_beer),
-          //detailSection(_beer),
+          _buildDetailSection(_beer),
         ],
       ),
     );

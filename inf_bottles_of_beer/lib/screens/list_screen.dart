@@ -66,11 +66,11 @@ class _ListScreenState extends State<ListScreen> {
       appBar: AppBar(
         title: const Text('Inf. bottles of beer'),
       ),
-      body: _buildSuggestions(),
+      body: _buildList(),
     );
   }
 
-  Widget _buildSuggestions() {
+  Widget _buildList() {
     return ListView.builder(
       padding: const EdgeInsets.all(16.0),
       itemBuilder: (context, i) {
@@ -90,29 +90,50 @@ class _ListScreenState extends State<ListScreen> {
         style: _biggerFont,
       ),
       subtitle: Text(beer.brewer ?? '', style: _smallerFont),
-      trailing: RatingBar.builder(
-        initialRating: beer.rating ?? 0,
-        minRating: 1,
-        direction: Axis.horizontal,
-        allowHalfRating: true,
-        itemCount: 5,
-        itemSize: 20,
-        itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
-        itemBuilder: (context, _) => const Icon(
-          Icons.star,
-          color: Colors.amber,
-        ),
-        onRatingUpdate: (rating) {
-          beer.rating = rating;
-        },
-      ),
+      trailing: _buildRating(beer),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return DetailedScreen(beer);
         })).then((value) {
-          return _buildSuggestions();
+          setState(() {
+            _buildRow(beer);
+          });
         });
       },
     );
+  }
+
+  Widget _buildRating(Beer beer) {
+    return Container(
+        padding: const EdgeInsets.only(top: 5, bottom: 5),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RatingBar.builder(
+              initialRating: beer.rating ?? 0,
+              minRating: 0,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              itemSize: 16,
+              //itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
+              itemBuilder: (context, _) => const Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              updateOnDrag: true,
+              onRatingUpdate: (rating) {
+                setState(() {
+                  beer.rating = rating;
+                });
+              },
+            ),
+            Text(
+              beer.rating != null ? beer.rating.toString() : '-',
+              style: _smallerFont,
+            )
+          ],
+        )
+      );
   }
 }
