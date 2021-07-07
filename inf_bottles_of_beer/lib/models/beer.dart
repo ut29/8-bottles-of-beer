@@ -1,5 +1,4 @@
 enum Currency {
-  none,
   jpy,
   usd,
   eur,
@@ -23,22 +22,22 @@ enum BubbleMeter {
 }
 
 class Flavor {
-  double alcohol = 0;
-  double darkFruit = 0;
-  double citrusFruit = 0;
-  double hoppy = 0;
-  double floral = 0;
-  double spicy = 0;
-  double herbal = 0;
-  double malty = 0;
-  double toffee = 0;
-  double burnt = 0;
-  double sweet = 0;
-  double sour = 0;
-  double bitter = 0;
-  double dry = 0;
-  double body = 0;
-  double linger = 0;
+  int alcohol = 0;
+  int darkFruit = 0;
+  int citrusFruit = 0;
+  int hoppy = 0;
+  int floral = 0;
+  int spicy = 0;
+  int herbal = 0;
+  int malty = 0;
+  int toffee = 0;
+  int burnt = 0;
+  int sweet = 0;
+  int sour = 0;
+  int bitter = 0;
+  int dry = 0;
+  int body = 0;
+  int linger = 0;
 }
 
 class Beer {
@@ -47,7 +46,7 @@ class Beer {
   String? origin;
   DateTime date = DateTime.now();
   double? price;
-  Currency? unit;
+  late Currency unit;
   String? sampled;
   double? rating;
   String? notes;
@@ -60,5 +59,7 @@ class Beer {
   BubbleMeter? bubbleMeter;
   Flavor flavor = Flavor();
 
-  Beer(this.name, [this.brewer, this.abv, this.ibu, this.srm]);
+  Beer(this.name, [this.brewer, this.abv, this.ibu, this.srm]) {
+    this.unit = Currency.usd;  // should be default
+  }
 }

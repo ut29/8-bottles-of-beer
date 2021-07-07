@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/beer.dart';
 import './detailed_screen.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class ListScreen extends StatefulWidget {
   const ListScreen({Key? key}) : super(key: key);
@@ -109,31 +109,20 @@ class _ListScreenState extends State<ListScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            RatingBar.builder(
-              initialRating: beer.rating ?? 0,
-              minRating: 0,
-              direction: Axis.horizontal,
-              allowHalfRating: true,
-              itemCount: 5,
-              itemSize: 16,
-              //itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
-              itemBuilder: (context, _) => const Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-              updateOnDrag: true,
-              onRatingUpdate: (rating) {
-                setState(() {
-                  beer.rating = rating;
-                });
-              },
-            ),
+            SmoothStarRating(
+                allowHalfRating: false,
+                starCount: 5,
+                rating: beer.rating ?? 0,
+                size: 20.0,
+                isReadOnly: true,
+                halfFilledIconData: Icons.star_half,
+                filledIconData: Icons.star,
+                spacing: 0.0),
             Text(
               beer.rating != null ? beer.rating.toString() : '-',
               style: _smallerFont,
             )
           ],
-        )
-      );
+        ));
   }
 }

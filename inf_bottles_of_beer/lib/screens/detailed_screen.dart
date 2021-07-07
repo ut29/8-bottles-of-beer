@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../models/beer.dart';
 import "package:intl/intl.dart";
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:async';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class DetailedScreen extends StatefulWidget {
   //const DetailedScreen({Key? key}) : super(key: key);
@@ -17,6 +18,10 @@ class DetailedScreen extends StatefulWidget {
 
 class _DetailedScreenState extends State<DetailedScreen> {
   late Beer _beer;
+  final _denseDecoration = const InputDecoration(
+    isDense: true,
+    contentPadding: EdgeInsets.all(2),
+  );
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime selected = (await showDatePicker(
@@ -42,6 +47,7 @@ class _DetailedScreenState extends State<DetailedScreen> {
               const Text('BEER NAME  '),
               Expanded(
                 child: TextField(
+                  decoration: _denseDecoration,
                   controller: TextEditingController(text: beer.name),
                   onChanged: (text) {
                     beer.name = text;
@@ -55,6 +61,7 @@ class _DetailedScreenState extends State<DetailedScreen> {
               const Text('BREWER  '),
               Expanded(
                 child: TextField(
+                  decoration: _denseDecoration,
                   controller: TextEditingController(text: beer.brewer),
                   onChanged: (text) {
                     beer.brewer = text;
@@ -68,6 +75,7 @@ class _DetailedScreenState extends State<DetailedScreen> {
               const Text('ORIGIN  '),
               Expanded(
                 child: TextField(
+                  decoration: _denseDecoration,
                   controller: TextEditingController(text: beer.origin),
                   onChanged: (text) {
                     beer.origin = text;
@@ -77,6 +85,7 @@ class _DetailedScreenState extends State<DetailedScreen> {
               const Text('  DATE '),
               Expanded(
                 child: TextField(
+                  decoration: _denseDecoration,
                   controller:
                       TextEditingController(text: formatter.format(beer.date)),
                   onTap: () => _selectDate(context),
@@ -90,55 +99,282 @@ class _DetailedScreenState extends State<DetailedScreen> {
   }
 
   Widget _buildDetailSection(Beer beer) {
-    print("detail");
     return Container(
-      padding: const EdgeInsets.all(10),
-      child: Row(children: [
-        _buildBorderSection('Rating', _buildRating(beer))
-        //_buildDetailLeft(beer),
-        //_buildDetailRight(beer),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Expanded(
+          flex: 3,
+          child: _buildDetailLeft(beer),
+        ),
+        Expanded(
+          flex: 5,
+          child: _buildDetailRight(beer),
+        ),
       ]),
     );
   }
 
+  Widget _buildDetailLeft(Beer beer) {
+    return Container(
+      child: Column(
+        children: [
+          _buildBorderSection('RATING', _buildRating(beer)),
+          _buildBorderSection('STATS', _buildStats(beer)),
+          _buildBorderSection('SERVING TYPE', _buildServingType(beer)),
+          _buildBorderSection('BUBBLE METER', Text('TBD')),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRight(Beer beer) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          _buildBorderSection('NOTES', _buildNotes(beer)),
+          _buildBorderSection('FLAVOR WHEEL', Text('TBD')),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStats(Beer beer) {
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const Text('AVB  '),
+              Expanded(
+                child: TextField(
+                  decoration: _denseDecoration,
+                  //keyboardType: TextInputType.number,
+                  //inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  controller: TextEditingController(
+                      text: beer.abv != null ? beer.abv.toString() : ''),
+                  onChanged: (text) {
+                    beer.abv = double.parse(text);
+                  },
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              const Text('IBU  '),
+              Expanded(
+                child: TextField(
+                  decoration: _denseDecoration,
+                  //keyboardType: TextInputType.number,
+                  //inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  controller: TextEditingController(
+                      text: beer.ibu != null ? beer.ibu.toString() : ''),
+                  onChanged: (text) {
+                    beer.ibu = double.parse(text);
+                  },
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              const Text('OG  '),
+              Expanded(
+                child: TextField(
+                  decoration: _denseDecoration,
+                  //keyboardType: TextInputType.number,
+                  //inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  controller: TextEditingController(
+                      text: beer.og != null ? beer.og.toString() : ''),
+                  onChanged: (text) {
+                    beer.og = double.parse(text);
+                  },
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              const Text('TG  '),
+              Expanded(
+                child: TextField(
+                  decoration: _denseDecoration,
+                  //keyboardType: TextInputType.number,
+                  //inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  controller: TextEditingController(
+                      text: beer.tg != null ? beer.tg.toString() : ''),
+                  onChanged: (text) {
+                    beer.tg = double.parse(text);
+                  },
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              const Text('SRM  '),
+              Expanded(
+                child: TextField(
+                  decoration: _denseDecoration,
+                  //keyboardType: TextInputType.number,
+                  //inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  controller: TextEditingController(
+                      text: beer.srm != null ? beer.srm.toString() : ''),
+                  onChanged: (text) {
+                    beer.srm = int.parse(text);
+                  },
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              const Text('PRICE  '),
+              Expanded(
+                child: TextField(
+                  decoration: _denseDecoration,
+                  //keyboardType: TextInputType.number,
+                  //inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  controller: TextEditingController(
+                      text: beer.price != null ? beer.price.toString() : ''),
+                  onChanged: (text) {
+                    beer.price = double.parse(text);
+                  },
+                ),
+              ),
+              Text(beer.unit.toString().split('.').last),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildServingType(Beer beer) {
+    return Container(
+      child: Column(
+        children: [
+          RadioListTile(
+            contentPadding: EdgeInsets.all(0),
+            dense: true,
+              title: Text('BOTTLE'),
+              value: ServingType.bottle,
+              groupValue: beer.servingType,
+              onChanged: (value) {
+                setState(() {
+                  beer.servingType = value as ServingType;
+                });
+              }),
+          RadioListTile(
+            contentPadding: EdgeInsets.all(0),
+            dense: true,
+              title: Text('CAN'),
+              value: ServingType.can,
+              groupValue: beer.servingType,
+              onChanged: (value) {
+                setState(() {
+                  beer.servingType = value as ServingType;
+                });
+              }),
+          RadioListTile(
+            contentPadding: EdgeInsets.all(0),
+            dense: true,
+              title: Text('CASK'),
+              value: ServingType.cask,
+              groupValue: beer.servingType,
+              onChanged: (value) {
+                setState(() {
+                  beer.servingType = value as ServingType;
+                });
+              }),
+          RadioListTile(
+            contentPadding: EdgeInsets.all(0),
+            dense: true,
+              title: Text('DRAFT'),
+              value: ServingType.draft,
+              groupValue: beer.servingType,
+              onChanged: (value) {
+                setState(() {
+                  beer.servingType = value as ServingType;
+                });
+              }),
+          RadioListTile(
+            contentPadding: EdgeInsets.all(0),
+            dense: true,
+              title: Text('GROWLER'),
+              value: ServingType.growler,
+              groupValue: beer.servingType,
+              onChanged: (value) {
+                setState(() {
+                  beer.servingType = value as ServingType;
+                });
+              }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotes(Beer beer) {
+    return TextField(
+      decoration: _denseDecoration,
+      controller: TextEditingController(text: beer.notes),
+      onChanged: (text) {
+        beer.notes = text;
+      },
+      keyboardType: TextInputType.multiline,
+      maxLines: 5,
+      minLines: 5,
+      textInputAction: TextInputAction.done,
+    );
+  }
+
+  Widget _buildStar(double value) {
+    return SmoothStarRating(
+        allowHalfRating: false,
+        onRated: (v) {},
+        starCount: 5,
+        rating: value,
+        size: 20.0,
+        isReadOnly: true,
+        halfFilledIconData: Icons.star_half,
+        filledIconData: Icons.star,
+        spacing: 0.0);
+  }
+
   Widget _buildRating(Beer beer) {
     return Container(
-        padding: const EdgeInsets.only(top: 5, bottom: 5),
+        //padding: const EdgeInsets.only(top: 5, bottom: 5),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            RatingBar.builder(
-              initialRating: beer.rating ?? 0,
-              minRating: 0,
-              direction: Axis.horizontal,
-              allowHalfRating: true,
-              itemCount: 5,
-              itemSize: 20,
-              //itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
-              itemBuilder: (context, _) => const Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-              updateOnDrag: true,
-              onRatingUpdate: (rating) {
-                setState(() {
-                  beer.rating = rating;
-                });
-              },
-            ),
-            Text('slider')
-          ],
-        ));
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildStar(beer.rating ?? 0),
+        Visibility(
+          visible: true,
+          child: Slider(
+            value: beer.rating ?? 0,
+            min: 0,
+            max: 5,
+            divisions: 20,
+            onChanged: (double value) {
+              setState(() {
+                beer.rating = value;
+                _buildStar(beer.rating ?? 0);
+              });
+            },
+          ),
+        ),
+      ],
+    ));
   }
 
   Widget _buildBorderBox(Widget contents) {
     return Container(
+      margin: const EdgeInsets.all(5),
       decoration: BoxDecoration(
-        border: Border.all(
-          width: 2,
-          color: Colors.black26,
-        )
-      ),
+          border: Border.all(
+        width: 2,
+        color: Colors.black26,
+      )),
       child: contents,
     );
   }
@@ -149,10 +385,8 @@ class _DetailedScreenState extends State<DetailedScreen> {
         Text(title),
         Divider(
           height: 3,
-          thickness: 3,
+          thickness: 2,
           color: Colors.black26,
-          indent: 10,
-          endIndent: 10,
         ),
         contents,
       ],
