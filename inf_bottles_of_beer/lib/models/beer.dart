@@ -60,6 +60,6 @@ class Beer {
   Flavor flavor = Flavor();
 
   Beer(this.name, [this.brewer, this.abv, this.ibu, this.srm]) {
-    this.unit = Currency.usd;  // should be default
+    unit = Currency.usd;  // should be default
   }
 }

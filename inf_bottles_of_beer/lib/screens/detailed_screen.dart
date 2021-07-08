@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../models/beer.dart';
+import 'package:inf_bottles_of_beer/models/beer.dart';
 import "package:intl/intl.dart";
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:async';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:inf_bottles_of_beer/components/border_section.dart';
+import 'package:inf_bottles_of_beer/components/rating.dart';
 
 class DetailedScreen extends StatefulWidget {
   //const DetailedScreen({Key? key}) : super(key: key);
@@ -37,7 +39,7 @@ class _DetailedScreenState extends State<DetailedScreen> {
 
   Widget _buildBasicSection(Beer beer) {
     initializeDateFormatting("ja_JP");
-    var formatter = new DateFormat('yyyy/MM/dd', "ja_JP");
+    var formatter = DateFormat('yyyy/MM/dd', "ja_JP");
     return Container(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -117,10 +119,10 @@ class _DetailedScreenState extends State<DetailedScreen> {
     return Container(
       child: Column(
         children: [
-          _buildBorderSection('RATING', _buildRating(beer)),
-          _buildBorderSection('STATS', _buildStats(beer)),
-          _buildBorderSection('SERVING TYPE', _buildServingType(beer)),
-          _buildBorderSection('BUBBLE METER', Text('TBD')),
+          BorderSection('RATING', BeerRating(beer)),
+          BorderSection('STATS', _buildStats(beer)),
+          BorderSection('SERVING TYPE', _buildServingType(beer)),
+          BorderSection('BUBBLE METER', const Text('TBD')),
         ],
       ),
     );
@@ -131,8 +133,8 @@ class _DetailedScreenState extends State<DetailedScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          _buildBorderSection('NOTES', _buildNotes(beer)),
-          _buildBorderSection('FLAVOR WHEEL', Text('TBD')),
+          BorderSection('NOTES', _buildNotes(beer)),
+          BorderSection('FLAVOR WHEEL', Text('TBD')),
         ],
       ),
     );
@@ -140,11 +142,12 @@ class _DetailedScreenState extends State<DetailedScreen> {
 
   Widget _buildStats(Beer beer) {
     return Container(
+      margin: const EdgeInsets.all(3),
       child: Column(
         children: [
           Row(
             children: [
-              const Text('AVB  '),
+              const Text('ABV '),
               Expanded(
                 child: TextField(
                   decoration: _denseDecoration,
@@ -161,7 +164,7 @@ class _DetailedScreenState extends State<DetailedScreen> {
           ),
           Row(
             children: [
-              const Text('IBU  '),
+              const Text('IBU '),
               Expanded(
                 child: TextField(
                   decoration: _denseDecoration,
@@ -178,7 +181,7 @@ class _DetailedScreenState extends State<DetailedScreen> {
           ),
           Row(
             children: [
-              const Text('OG  '),
+              const Text('OG '),
               Expanded(
                 child: TextField(
                   decoration: _denseDecoration,
@@ -195,7 +198,7 @@ class _DetailedScreenState extends State<DetailedScreen> {
           ),
           Row(
             children: [
-              const Text('TG  '),
+              const Text('TG '),
               Expanded(
                 child: TextField(
                   decoration: _denseDecoration,
@@ -212,7 +215,7 @@ class _DetailedScreenState extends State<DetailedScreen> {
           ),
           Row(
             children: [
-              const Text('SRM  '),
+              const Text('SRM '),
               Expanded(
                 child: TextField(
                   decoration: _denseDecoration,
@@ -229,7 +232,7 @@ class _DetailedScreenState extends State<DetailedScreen> {
           ),
           Row(
             children: [
-              const Text('PRICE  '),
+              const Text('PRICE '),
               Expanded(
                 child: TextField(
                   decoration: _denseDecoration,
@@ -252,12 +255,14 @@ class _DetailedScreenState extends State<DetailedScreen> {
 
   Widget _buildServingType(Beer beer) {
     return Container(
+      margin: const EdgeInsets.all(0),
+      padding: const EdgeInsets.all(0),
       child: Column(
         children: [
           RadioListTile(
-            contentPadding: EdgeInsets.all(0),
-            dense: true,
-              title: Text('BOTTLE'),
+              contentPadding: const EdgeInsets.all(0),
+              dense: true,
+              title: const Text('BOTTLE'),
               value: ServingType.bottle,
               groupValue: beer.servingType,
               onChanged: (value) {
@@ -266,9 +271,9 @@ class _DetailedScreenState extends State<DetailedScreen> {
                 });
               }),
           RadioListTile(
-            contentPadding: EdgeInsets.all(0),
-            dense: true,
-              title: Text('CAN'),
+              contentPadding: const EdgeInsets.all(0),
+              dense: true,
+              title: const Text('CAN'),
               value: ServingType.can,
               groupValue: beer.servingType,
               onChanged: (value) {
@@ -277,9 +282,9 @@ class _DetailedScreenState extends State<DetailedScreen> {
                 });
               }),
           RadioListTile(
-            contentPadding: EdgeInsets.all(0),
-            dense: true,
-              title: Text('CASK'),
+              contentPadding: const EdgeInsets.all(0),
+              dense: true,
+              title: const Text('CASK'),
               value: ServingType.cask,
               groupValue: beer.servingType,
               onChanged: (value) {
@@ -288,9 +293,9 @@ class _DetailedScreenState extends State<DetailedScreen> {
                 });
               }),
           RadioListTile(
-            contentPadding: EdgeInsets.all(0),
-            dense: true,
-              title: Text('DRAFT'),
+              contentPadding: const EdgeInsets.all(0),
+              dense: true,
+              title: const Text('DRAFT'),
               value: ServingType.draft,
               groupValue: beer.servingType,
               onChanged: (value) {
@@ -299,9 +304,9 @@ class _DetailedScreenState extends State<DetailedScreen> {
                 });
               }),
           RadioListTile(
-            contentPadding: EdgeInsets.all(0),
-            dense: true,
-              title: Text('GROWLER'),
+              contentPadding: const EdgeInsets.all(0),
+              dense: true,
+              title: const Text('GROWLER'),
               value: ServingType.growler,
               groupValue: beer.servingType,
               onChanged: (value) {
@@ -328,78 +333,13 @@ class _DetailedScreenState extends State<DetailedScreen> {
     );
   }
 
-  Widget _buildStar(double value) {
-    return SmoothStarRating(
-        allowHalfRating: false,
-        onRated: (v) {},
-        starCount: 5,
-        rating: value,
-        size: 20.0,
-        isReadOnly: true,
-        halfFilledIconData: Icons.star_half,
-        filledIconData: Icons.star,
-        spacing: 0.0);
-  }
-
-  Widget _buildRating(Beer beer) {
-    return Container(
-        //padding: const EdgeInsets.only(top: 5, bottom: 5),
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildStar(beer.rating ?? 0),
-        Visibility(
-          visible: true,
-          child: Slider(
-            value: beer.rating ?? 0,
-            min: 0,
-            max: 5,
-            divisions: 20,
-            onChanged: (double value) {
-              setState(() {
-                beer.rating = value;
-                _buildStar(beer.rating ?? 0);
-              });
-            },
-          ),
-        ),
-      ],
-    ));
-  }
-
-  Widget _buildBorderBox(Widget contents) {
-    return Container(
-      margin: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-          border: Border.all(
-        width: 2,
-        color: Colors.black26,
-      )),
-      child: contents,
-    );
-  }
-
-  Widget _buildBorderSection(String title, Widget contents) {
-    return _buildBorderBox(Column(
-      children: [
-        Text(title),
-        Divider(
-          height: 3,
-          thickness: 2,
-          color: Colors.black26,
-        ),
-        contents,
-      ],
-    ));
-  }
-
   @override
   Widget build(BuildContext context) {
     _beer = widget._beer;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Details'),
+        title: const Text('Details'),
       ),
       body: ListView(
         children: [

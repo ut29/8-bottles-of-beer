@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/beer.dart';
-import './detailed_screen.dart';
+import 'package:inf_bottles_of_beer/models/beer.dart';
+import 'detailed_screen.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class ListScreen extends StatefulWidget {
